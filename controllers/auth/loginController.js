@@ -70,7 +70,7 @@ const loginController = {
       await RefreshToken.deleteOne({ token: req.body.refresh_token });
       res.json({ status: 1 });
     } catch (err) {
-      return next(new Error("Something wen wrong."));
+      return next(err.messages);
     }
   },
 };

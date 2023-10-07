@@ -1,12 +1,13 @@
 import { DEBUG_MODE } from "../config";
 import { ValidationError } from "joi";
 import CustomErrorHandler from "../services/CustomErrorHandler";
+import { errorMessages } from '../constants';
 
 
 const errorHandler = (err, req, res, next) => {
   let statusCode = 500;
   let data = {
-    message: "Internal server error",
+    message: errorMessages.INTERNAL_SERVER_ERROR,
     ...(DEBUG_MODE === "true" && { originalError: err.message }),
   };
 
@@ -17,12 +18,12 @@ const errorHandler = (err, req, res, next) => {
     };
   }
 
-    if (err instanceof CustomErrorHandler) {
-      statusCode = err.status;
-      data = {
-        message: err.message,
-      };
-    }
+  if (err instanceof CustomErrorHandler) {
+    statusCode = err.status;
+    data = {
+      message: err.message,
+    };
+  }
 
 
   return res.status(statusCode).json(data);

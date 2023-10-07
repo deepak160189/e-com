@@ -1,3 +1,5 @@
+import errorMessages from "../constants/errorMessages";
+
 class CustomErrorHandler extends Error {
   constructor(status, msg) {
     super();
@@ -9,15 +11,15 @@ class CustomErrorHandler extends Error {
     return new CustomErrorHandler(409, message);
   };
 
-  static wrongCredentials = (message = "User name and password is wrong!") => {
+  static wrongCredentials = (message = errorMessages.WRONG_CREDENTIALS) => {
     return new CustomErrorHandler(401, message);
   };
 
-  static unAuthorized = (message = "unAuthorized") => {
+  static unAuthorized = (message = errorMessages.UNAUTHORIZED_USER) => {
     return new CustomErrorHandler(401, message);
   };
 
-  static notFound = (message = "404 Not found") => {
+  static notFound = (message = errorMessages.NOT_FOUND) => {
     return new CustomErrorHandler(404, message);
   };
 }

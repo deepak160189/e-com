@@ -4,6 +4,7 @@ import CustomErrorHandler from "../../services/CustomErrorHandler";
 import { RefreshToken, User } from "../../models";
 import JwtServices from "../../services/JWTServices";
 import { REFRESH_SECRET } from "../../config";
+import errorMessages from "../../constants/errorMessages";
 
 const registerController = {
   async register(req, res, next) {
@@ -26,7 +27,7 @@ const registerController = {
       const exist = await User.exists({ email: req.body.email });
       if (exist) {
         return next(
-          CustomErrorHandler.alreadyExist("This email is already taken")
+          CustomErrorHandler.alreadyExist(errorMessages.EMAIL_TAKEN)
         );
       }
     } catch (err) {
@@ -60,7 +61,7 @@ const registerController = {
       );
 
       await RefreshToken.create({ token: refresh_token });
-      
+
     } catch (err) {
       return next(err);
     }

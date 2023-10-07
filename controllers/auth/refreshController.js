@@ -3,9 +3,11 @@ import { RefreshToken, User } from "../../models";
 import CustomErrorHandler from "../../services/CustomErrorHandler";
 import JwtServices from "../../services/JWTServices";
 import { REFRESH_SECRET } from "../../config";
+import errorMessages from "../../constants/errorMessages";
 
 const refreshController = {
   async refresh(req, res, next) {
+
     // Validation
     const refreshSchema = Joi.object({
       refresh_token: Joi.string().required(),
@@ -17,6 +19,7 @@ const refreshController = {
       return next(error);
     }
 
+    // database
     let refreshToken;
 
     try {
@@ -26,7 +29,7 @@ const refreshController = {
 
 
       if (!refreshToken) {
-        return next(CustomErrorHandler.unAuthorized("Invalid refresh token!"));
+        return next(CustomErrorHandler.unAuthorized(errorMessages.INVALID_REFRESH_TOKEN));
       }
       let userId;
       try {
@@ -36,13 +39,13 @@ const refreshController = {
         );
         userId = _id;
       } catch (err) {
-        return next(CustomErrorHandler.unAuthorized("Invalid refresh token!"));
+        return next(CustomErrorHandler.unAuthorized(errorMessages.INVALID_REFRESH_TOKEN));
       }
 
       const user = await User.findOne({ _id: userId });
 
       if (!user) {
-        return next(CustomErrorHandler.unAuthorized("No user found."));
+        return next(CustomErrorHandler.unAuthorized(errorMessages.USER_NOT_FOUND));
       }
 
       // Token
@@ -57,7 +60,7 @@ const refreshController = {
 
       res.json({ access_token, refresh_token });
     } catch (err) {
-      return next(new Error("Something went wrong!" + err.message));
+      return next(err);
     }
   },
 };
